@@ -1,9 +1,10 @@
-import 'package:bookshelf/presentation/book_screen.dart';
-import 'package:bookshelf/presentation/search_screen.dart';
+import 'package:bookshelf/di.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'navigation.dart';
 
 void main() {
+  setupDi();
   runApp(
       MaterialApp(
         title: 'Bookshelf',
@@ -12,20 +13,7 @@ void main() {
           useMaterial3: true,
         ),
         initialRoute: "/search",
-        routes: {
-          "/search": (_) => BlocProvider(
-            create: (_) => SearchCubit(),
-            child: const SearchScreen()
-          ),
-          "/book": (_) => BlocProvider(
-              create: (_) {
-                final cubit = BookCubit();
-                cubit.fetch();
-                return cubit;
-              },
-              child: const BookScreen()
-          ),
-        },
+        routes: Navigation.routes,
       )
   );
 }

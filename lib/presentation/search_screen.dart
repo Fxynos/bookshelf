@@ -1,3 +1,4 @@
+import 'package:bookshelf/domain/usecase/search_book_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +23,9 @@ class SearchScreen extends StatelessWidget {
 
 class SearchCubit extends Cubit<SearchState> {
 
-  SearchCubit(): super(DefaultSearchState());
+  final SearchBookUseCase _searchBookUseCase;
+
+  SearchCubit(this._searchBookUseCase): super(DefaultSearchState());
 
   Future<void> search(String request) async {} // TODO
 }

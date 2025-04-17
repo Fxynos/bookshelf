@@ -1,4 +1,5 @@
 import 'package:bookshelf/domain/entity/book.dart';
+import 'package:bookshelf/domain/usecase/get_book_by_id_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +24,9 @@ class BookScreen extends StatelessWidget {
 
 class BookCubit extends Cubit<BookState> {
 
-  BookCubit(): super(DefaultBookState());
+  final GetBookByIdUseCase _getBookByIdUseCase;
+
+  BookCubit(this._getBookByIdUseCase): super(DefaultBookState());
 
   Future<void> fetch() async {} // TODO
 }
