@@ -2,7 +2,7 @@ import 'package:bookshelf/domain/entity/book.dart';
 
 import 'dto/book_dto.dart';
 
-class NetworkMapper {
+class DtoMapper {
   static Book toDomain(BookDto dto) => Book(
       id: dto.id!,
       title: dto.volumeInfo!.title!,
