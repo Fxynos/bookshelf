@@ -1,3 +1,4 @@
+import 'package:bookshelf/domain/entity/book.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,5 +34,6 @@ sealed class BookState {}
 
 class DefaultBookState implements BookState {}
 class ResultsBookState implements BookState {
-  // TODO results
+  final List<Book> results;
+  ResultsBookState({required this.results});
 }
