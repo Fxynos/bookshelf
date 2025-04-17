@@ -106,7 +106,7 @@ class VolumeInfoDto {
     subtitle = json['subtitle'];
     description = json['description'];
     publisher = json['publisher'];
-    authors = json['authors'] == null ? null : List.of(json['authors']);
+    authors = json['authors'] == null ? null : List.of(json['authors']).map((author) => author as String).toList();
     publishedDate = json['publishedDate'];
     if (json['industryIdentifiers'] != null) {
       industryIdentifiers = <IndustryIdentifiersDto>[];

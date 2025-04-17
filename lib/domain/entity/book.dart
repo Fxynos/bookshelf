@@ -1,9 +1,9 @@
 class Book {
   final String id;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final String? publisher;
-  final int publishedYear;
+  final int? publishedYear;
   final List<String> authors;
   final String? description;
   final String thumbnail;

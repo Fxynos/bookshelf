@@ -3,6 +3,7 @@ import 'package:http/http.dart';
 
 import '../domain/boundary/book_repository.dart';
 import '../domain/entity/book.dart';
+import 'dto/book_dto.dart';
 import 'dto_mapper.dart';
 
 /// Implementation of Google Books API
@@ -49,8 +50,8 @@ class RemoteBookRepository implements BookRepository {
           "$_baseUrl/volumes?q=${Uri.encodeFull(query)}"
       )).then((response) => jsonDecode(response.body))
           .then((json) =>
-          (json.items as List<dynamic>)
-              .map((item) => DtoMapper.toDomain(item))
+          (json["items"] as List<dynamic>)
+              .map((item) => DtoMapper.toDomain(BookDto.fromJson(item)))
               .toList()
       );
 

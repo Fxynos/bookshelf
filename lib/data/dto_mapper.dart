@@ -6,11 +6,13 @@ class DtoMapper {
   static Book toDomain(BookDto dto) => Book(
       id: dto.id!,
       title: dto.volumeInfo!.title!,
-      subtitle: dto.volumeInfo!.subtitle!,
+      subtitle: dto.volumeInfo!.subtitle,
       publisher: dto.volumeInfo!.publisher,
-      publishedYear: int.parse(dto.volumeInfo!.publishedDate!.split("-").first),
+      publishedYear: dto.volumeInfo!.publishedDate == null ? null :
+        int.parse(dto.volumeInfo!.publishedDate!.split("-").first),
       authors: dto.volumeInfo!.authors ?? List.empty(),
       description: dto.volumeInfo!.description,
       thumbnail: dto.volumeInfo!.imageLinks!.thumbnail!
+          .replaceFirst("http://", "https://")
   );
 }
