@@ -19,12 +19,15 @@ class SearchScreen extends StatelessWidget {
       });
 
   Widget _buildHeader(BuildContext context, Function(String) onSearch) => Padding(
-    padding: const EdgeInsets.all(8),
+    padding: const EdgeInsets.only(left: 8, right: 8, top: 8),
     child: TextField(
       decoration: InputDecoration(
           hintText: "Введите запрос",
-          hintStyle: AppTypography.bodyLarge.copyWith(color: Colors.grey),
-          filled: false,
+          hintStyle: AppTypography.bodyLarge.copyWith(
+              color: Theme.of(context).colorScheme.onSecondaryContainer
+          ),
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.secondaryContainer,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none
@@ -38,6 +41,9 @@ class SearchScreen extends StatelessWidget {
               borderSide: BorderSide.none
           )
       ),
+      style: AppTypography.bodyLarge.copyWith(
+          color: Theme.of(context).colorScheme.onSecondaryContainer
+      ),
       textInputAction: TextInputAction.search,
       onSubmitted: (value) {
         if (value.isNotEmpty) {
@@ -49,24 +55,24 @@ class SearchScreen extends StatelessWidget {
 
   Widget _buildBody(BuildContext context, SearchState state) {
     if (state is DefaultSearchState) {
-      return const Center(child: Text(
+      return Center(child: Text(
           "Здесь отобразятся результаты",
-          style: AppTypography.h2)
+          style: AppTypography.h2.copyWith(color: Colors.grey))
       );
     }
 
     if (state is LoadingSearchState) {
-      return const Center(child: Text(
+      return Center(child: Text(
           "Подождите...",
-          style: AppTypography.h2)
+          style: AppTypography.h2.copyWith(color: Colors.grey))
       );
     }
 
     if (state is ResultsSearchState) {
       if (state.results.isEmpty) {
-        return const Center(child: Text(
+        return Center(child: Text(
             "По вашему запросу результатов не найдено",
-            style: AppTypography.h2)
+            style: AppTypography.h2.copyWith(color: Colors.grey))
         );
       }
       return _buildResultsBody(context, state.results);
@@ -88,20 +94,36 @@ class SearchScreen extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: Theme.of(context).cardColor,
-          child: Row(children: [
-            Image.network(item.thumbnail),
-            const SizedBox(width: 16),
-            Column(children: [
-              Text(item.title, style: AppTypography.h2),
-              Text(
-                  item.description ?? "Нет описания",
-                  style: AppTypography.bodySmall.copyWith(
-                    color: item.description == null ? Colors.grey : Colors.black
-                  )
-              )
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          child: SizedBox(
+            height: 160,
+            child: Row(children: [
+              SizedBox(width: 120, child: Image.network(item.thumbnail)),
+              const SizedBox(width: 16),
+              Expanded(child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            item.title,
+                            style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            item.description ?? "Нет описания",
+                            style: AppTypography.bodySmall.copyWith(
+                                color: item.description == null ? Colors.grey : Colors.black
+                            ),
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis
+                        )
+                      ])
+              ))
             ])
-          ])
+          )
         )
       )
   );
@@ -114,6 +136,7 @@ class SearchCubit extends Cubit<SearchState> {
   SearchCubit(this._searchBookUseCase): super(DefaultSearchState());
 
   Future<void> search(String request) async {
+    emit(LoadingSearchState());
     emit(ResultsSearchState(
         results: await _searchBookUseCase.invoke(request)
     ));
