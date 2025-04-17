@@ -4,6 +4,8 @@ import 'package:bookshelf/presentation/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'book_screen.dart';
+
 class SearchScreen extends StatelessWidget {
 
   const SearchScreen({super.key});
@@ -14,7 +16,15 @@ class SearchScreen extends StatelessWidget {
         final viewModel = context.read<SearchCubit>();
         return Column(children: [
           _buildHeader(context, (request) => viewModel.search(request)),
-          Expanded(child: _buildBody(context, state))
+          Expanded(
+              child: _buildBody(context, state, (book) => // on click
+                  Navigator.pushNamed(
+                      context,
+                      "/book",
+                      arguments: BookArgs(bookId: book.id)
+                  )
+              )
+          )
         ]);
       });
 
@@ -53,7 +63,7 @@ class SearchScreen extends StatelessWidget {
     )
   );
 
-  Widget _buildBody(BuildContext context, SearchState state) {
+  Widget _buildBody(BuildContext context, SearchState state, Function(Book) onClick) {
     if (state is DefaultSearchState) {
       return Center(child: Text(
           "Здесь отобразятся результаты",
@@ -75,55 +85,61 @@ class SearchScreen extends StatelessWidget {
             style: AppTypography.h2.copyWith(color: Colors.grey))
         );
       }
-      return _buildResultsBody(context, state.results);
+      return _buildResultsBody(context, state.results, onClick);
     }
 
     throw Exception(); // unreachable
   }
 
-  Widget _buildResultsBody(BuildContext context, List<Book> books) => ListView.builder(
-    itemCount: books.length,
-    itemBuilder: (context, i) => _buildResultsItem(context, books[i])
-  );
+  Widget _buildResultsBody(BuildContext context, List<Book> books, Function(Book) onClick) =>
+      ListView.builder(
+          itemCount: books.length,
+          itemBuilder: (context, i) =>
+              _buildResultsItem(context, books[i], () => onClick(books[i])
+          )
+      );
 
-  Widget _buildResultsItem(BuildContext context, Book item) => Padding(
+  Widget _buildResultsItem(BuildContext context, Book item, Function() onClick) => Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 4
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          color: Theme.of(context).colorScheme.surfaceContainer,
-          child: SizedBox(
-            height: 160,
-            child: Row(children: [
-              SizedBox(width: 120, child: Image.network(item.thumbnail)),
-              const SizedBox(width: 16),
-              Expanded(child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            item.title,
-                            style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                            item.description ?? "Нет описания",
-                            style: AppTypography.bodySmall.copyWith(
-                                color: item.description == null ? Colors.grey : Colors.black
-                            ),
-                            maxLines: 4,
-                            overflow: TextOverflow.ellipsis
-                        )
-                      ])
-              ))
-            ])
-          )
+      child: InkWell( // gives ripple effect in addition to gestures
+        onTap: onClick,
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                child: SizedBox(
+                    height: 160,
+                    child: Row(children: [
+                      SizedBox(width: 120, child: Image.network(item.thumbnail)),
+                      const SizedBox(width: 16),
+                      Expanded(child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    item.title,
+                                    style: AppTypography.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                    item.description ?? "Нет описания",
+                                    style: AppTypography.bodySmall.copyWith(
+                                        color: item.description == null ? Colors.grey : Colors.black
+                                    ),
+                                    maxLines: 4,
+                                    overflow: TextOverflow.ellipsis
+                                )
+                              ])
+                      ))
+                    ])
+                )
+            )
         )
       )
   );
