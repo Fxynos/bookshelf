@@ -18,4 +18,7 @@ void setupDi() => di
   ..registerFactory<SearchBookUseCase>(() => SearchBookUseCaseImpl(repository: di<BookRepository>()))
   // view models
   ..registerFactory(() => SearchCubit(di<SearchBookUseCase>()))
-  ..registerFactory(() => BookCubit(di<GetBookByIdUseCase>()));
+  ..registerFactoryParam<BookCubit, BookArgs, void>((args, _) => BookCubit( // assisted inject
+    args: args,
+    getBookByIdUseCase: di<GetBookByIdUseCase>()
+  ));

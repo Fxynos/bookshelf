@@ -1,3 +1,4 @@
+import 'package:bookshelf/domain/entity/book.dart';
 import 'package:bookshelf/domain/usecase/search_book_usecase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,11 @@ class SearchCubit extends Cubit<SearchState> {
 
   SearchCubit(this._searchBookUseCase): super(DefaultSearchState());
 
-  Future<void> search(String request) async {} // TODO
+  Future<void> search(String request) async {
+    emit(ResultsSearchState(
+        results: await _searchBookUseCase.invoke(request)
+    ));
+  }
 }
 
 /* UI State */
@@ -36,5 +41,6 @@ sealed class SearchState {}
 
 class DefaultSearchState implements SearchState {}
 class ResultsSearchState implements SearchState {
-  // TODO results
+  final List<Book> results;
+  ResultsSearchState({required this.results});
 }

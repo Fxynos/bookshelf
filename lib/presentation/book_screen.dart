@@ -10,11 +10,11 @@ class BookScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
       BlocBuilder<BookCubit, BookState>(builder: (context, state) {
-        if (state is DefaultBookState) {
+        if (state is LoadingBookState) {
           return const Spacer();
         }
 
-        if (state is ResultsBookState) {
+        if (state is LoadedBookState) {
           return const Spacer();
         }
 
@@ -24,19 +24,32 @@ class BookScreen extends StatelessWidget {
 
 class BookCubit extends Cubit<BookState> {
 
+  final BookArgs _args;
   final GetBookByIdUseCase _getBookByIdUseCase;
 
-  BookCubit(this._getBookByIdUseCase): super(DefaultBookState());
+  BookCubit({
+    required BookArgs args,
+    required GetBookByIdUseCase getBookByIdUseCase
+  }): _args = args, _getBookByIdUseCase = getBookByIdUseCase, super(LoadingBookState());
 
-  Future<void> fetch() async {} // TODO
+  Future<void> fetch() async {
+    emit(LoadedBookState(
+        book: await _getBookByIdUseCase.invoke(_args.bookId)
+    ));
+  }
+}
+
+class BookArgs {
+  final String bookId;
+  BookArgs({required this.bookId});
 }
 
 /* UI State */
 
 sealed class BookState {}
 
-class DefaultBookState implements BookState {}
-class ResultsBookState implements BookState {
-  final List<Book> results;
-  ResultsBookState({required this.results});
+class LoadingBookState implements BookState {}
+class LoadedBookState implements BookState {
+  final Book book;
+  LoadedBookState({required this.book});
 }

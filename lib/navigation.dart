@@ -12,7 +12,12 @@ class Navigation {
         child: const SearchScreen()
     ),
     "/book": (_) => BlocProvider(
-        create: (_) => di<BookCubit>()..fetch(),
+        create: (context) => di<BookCubit>(
+            param1: _getArgs<BookArgs>(context)
+        )..fetch(),
         child: const BookScreen()),
   };
 }
+
+T _getArgs<T>(BuildContext context) =>
+    ModalRoute.of(context)!.settings.arguments as T;
