@@ -4,6 +4,7 @@ import 'package:bookshelf/presentation/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'uikit/thumbnail.dart';
 import 'book_screen.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -72,10 +73,11 @@ class SearchScreen extends StatelessWidget {
     }
 
     if (state is LoadingSearchState) {
-      return Center(child: Text(
-          "Подождите...",
-          style: AppTypography.h2.copyWith(color: Colors.grey))
-      );
+      return Expanded(child: Center(child: Wrap(children: [Column(children: [
+        const CircularProgressIndicator(),
+        const SizedBox(height: 16),
+        Text("Подождите...", style: AppTypography.h2.copyWith(color: Colors.grey))
+      ])])));
     }
 
     if (state is ResultsSearchState) {
@@ -113,7 +115,7 @@ class SearchScreen extends StatelessWidget {
                 child: SizedBox(
                     height: 160,
                     child: Row(children: [
-                      SizedBox(width: 120, child: Image.network(item.thumbnail)),
+                      SizedBox(width: 120, child: Thumbnail(src: item.thumbnail)),
                       const SizedBox(width: 16),
                       Expanded(child: Padding(
                           padding: const EdgeInsets.all(8),

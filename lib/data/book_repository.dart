@@ -29,7 +29,7 @@ class RemoteBookRepository implements BookRepository {
       _client.get(Uri.parse(
           "$_baseUrl/volumes/$bookId"
       )).then((response) => jsonDecode(response.body))
-          .then((json) => DtoMapper.toDomain(json));
+          .then((json) => DtoMapper.toDomain(BookDto.fromJson(json)));
 
   @override
   Future<List<Book>> getFavorites(String token) =>
@@ -40,7 +40,7 @@ class RemoteBookRepository implements BookRepository {
       }).then((response) => jsonDecode(response.body))
           .then((json) =>
           (json.items as List<dynamic>)
-              .map((item) => DtoMapper.toDomain(item))
+              .map((item) => DtoMapper.toDomain(BookDto.fromJson(json)))
               .toList()
       );
 

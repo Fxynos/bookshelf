@@ -12,8 +12,8 @@ class Navigation {
         create: (_) => di<SearchCubit>(),
         child: const _ScreenWrapper(headline: "Поиск книг", body: SearchScreen())
     ),
-    "/book": (_) => BlocProvider(
-        create: (context) => di<BookCubit>(
+    "/book": (context) => BlocProvider(
+        create: (_) => di<BookCubit>(
             param1: _getArgs<BookArgs>(context)
         )..fetch(),
         child: const _ScreenWrapper(headline: "Книга", body: BookScreen())),
